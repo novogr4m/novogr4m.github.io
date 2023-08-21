@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    
+    Hexo
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-nginx And mongoose" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+
+    
+    <div class="article-meta">
+      <a href="/2023/08/22/nginx%20And%20mongoose/" class="article-date">
+  <time datetime="2023-08-21T16:19:17.107Z" itemprop="datePublished">2023-08-22</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+        <h1 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h1><blockquote>
+<p>出现是为了解决服务器支持成千上万个并发客户端的问题。</p>
+</blockquote>
+<p>nginx的进程模型：</p>
+<p><img src="C:\Users\93554\AppData\Roaming\Typora\typora-user-images\image-20230721160712712.png" alt="image-20230721160712712"></p>
+<blockquote>
+<p><strong>master进程：</strong>nginx的主进程，负责读取和验证配置文件，并管理worker进程。只有一个</p>
+<p><strong>worker进程：</strong>nginx的工作进程，负责处理实际的请求，可以有多个。</p>
+</blockquote>
+<p>worker进程的数量可以通过配置文件来修改，<code>worker_processes 1;</code></p>
+<p>使用nginx -t 检查配置文件的错误。</p>
+<h2 id="nginx-conf文件的结构："><a href="#nginx-conf文件的结构：" class="headerlink" title="nginx.conf文件的结构："></a>nginx.conf文件的结构：</h2><p>​	全局块</p>
+<p>​		ｅｖｅｎｔｓ：服务器与客户端的网络配置，如指定每个ｗｏｒｋｅｒ								可以同时接收多少个网络连接，网络IO模型</p>
+<p>​		ｈｔｔｐ：修改最频繁，反向代理、负载均衡，里面包括多个ｓｅｒｖｅｒ块，也叫虚拟主机</p>
+<h3 id="正向代理："><a href="#正向代理：" class="headerlink" title="正向代理："></a>正向代理：</h3><p>​	访问国外网站，可以使用VPN代理服务器，让代理服务器作为客户端，代理我们去访问这些网站，然后把访问结果返回给我们，对于服务器是透明的。</p>
+<h3 id="反向代理："><a href="#反向代理：" class="headerlink" title="反向代理："></a>反向代理：</h3><p>​	代理客户端的，如google网站后面又很多服务器，但只对外暴露一个域名，我们只能通过这个域名访问，我们的请求会被转发到后面的服务器上，隐藏了服务器的IP地址、端口等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">upstream name&#123;</span><br><span class="line">	ip_hash; //同一个客户端的请求分配到同一服务器上，解决了session等问题</span><br><span class="line">	</span><br><span class="line">	server ip:端口 weight=3;</span><br><span class="line">	server ip:端口;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">所有以/app开头的请求都被代理到刚刚配置的upstream</span><br><span class="line">location /app&#123;</span><br><span class="line">	proxy_pass http://name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="虚拟主机："><a href="#虚拟主机：" class="headerlink" title="虚拟主机："></a>虚拟主机：</h3><blockquote>
+<p>一台服务器部署多个站点。每个server块就是一个虚拟主机</p>
+</blockquote>
+<h2 id="mongoose"><a href="#mongoose" class="headerlink" title="mongoose"></a>mongoose</h2><ul>
+<li>Mongoose是一个让我们可以通过Node来操作MongoDB数据库的一个模块</li>
+<li>Mongoose是一个对象文档模型（ODM）库，是对Node原生的MongoDB模块进行了进一步的优化和封装</li>
+<li>基于MongDB驱动，通过关系型数据库的思想来实现非关系型数据库</li>
+</ul>
+<h4 id="new-Object"><a href="#new-Object" class="headerlink" title="new  Object"></a>new  Object</h4><ul>
+<li><p>Schema（模式对象）</p>
+<blockquote>
+<p>Schema对象定义约束了数据库中的文档结构</p>
+</blockquote>
+</li>
+<li><p>Model</p>
+<blockquote>
+<p>Model对象作为集合中的所有文档（document）的表示，相当于MongDB中的collection，它的每一个实例就是一个document文档</p>
+</blockquote>
+</li>
+<li><p>Document</p>
+<blockquote>
+<p>Document表示集合中的具体文档，相当于collection中的一个具体文档</p>
+</blockquote>
+</li>
+<li><p>关系：Schema 生成Model，Model创造Document（Schema是约束了Model的key？model就类似关系数据库中的一张表，document就相当于一段具体数据）</p>
+</li>
+</ul>
+<h4 id="基本使用："><a href="#基本使用：" class="headerlink" title="基本使用："></a>基本使用：</h4><p>1、安装Mongoose</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i mongoose --save</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>2、引入</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const mongoose = require(&#x27;mongoose&#x27;)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>3、连接本地MongoDB数据库</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mongoose.<span class="title function_">connect</span>(<span class="string">&#x27;mongodb://127.0.0.1:27017/数据库名&#x27;</span>);</span><br><span class="line"><span class="comment">//MongoDB默认端口号是27017</span></span><br><span class="line"></span><br><span class="line">mongoose.<span class="property">connection</span>.<span class="title function_">once</span>(<span class="string">&#x27;open&#x27;</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">	<span class="comment">//数据库连接成功事件</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">mongoose.<span class="property">connection</span>.<span class="title function_">on</span>(<span class="string">&#x27;error&#x27;</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">	<span class="comment">//连接错误事件</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">mongoose.<span class="property">connection</span>.<span class="title function_">on</span>(<span class="string">&#x27;close&#x27;</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">	<span class="comment">//连接关闭事件</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>4、Schema、model的基本使用(操作数据库)</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建schema对象，约束model</span></span><br><span class="line"><span class="keyword">const</span> userSchema = <span class="keyword">new</span> mongoose.<span class="title class_">Schema</span>(&#123;</span><br><span class="line">	<span class="attr">username</span>:<span class="title class_">String</span>,</span><br><span class="line">	<span class="attr">password</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">         <span class="attr">required</span>:<span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">	<span class="attr">gender</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">		<span class="attr">default</span>:<span class="string">&#x27;male&#x27;</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;<span class="attr">timeStamps</span>:<span class="literal">true</span>&#125; <span class="comment">//可选参数，为true时会自动添加createdAt(创建时间)和updatedAt(更新时间)两个字段                                      </span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建文档模型对象，将userSchema映射到一个MongDB Collection</span></span><br><span class="line"><span class="keyword">const</span> userModel = mongoose.<span class="title function_">model</span>(<span class="string">&#x27;users&#x27;</span>,userSchema)</span><br><span class="line"></span><br><span class="line"><span class="comment">//在Schema里添加字段要使用add()</span></span><br><span class="line">userSchema.<span class="title function_">add</span>(&#123;<span class="attr">userId</span>:<span class="title class_">Number</span>&#125;,)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>5、文档插入</p>
+<blockquote>
+<p>insert()、save()、insertMany()、create()</p>
+</blockquote>
+<p>6、文档删除</p>
+<blockquote>
+<p>remove()、findOneAndRemove()、findByIdAndRemove()</p>
+</blockquote>
+<p>7、文档更新</p>
+<blockquote>
+<p>update()、updateOne()、updateMany()、find()+save()、findOne()+save()、findOneAndUpdate()、findByIdAndUpdate()</p>
+</blockquote>
+<p>8、文档查询</p>
+<blockquote>
+<p>find()、findById()、findOne()</p>
+<p>复杂查询</p>
+</blockquote>
+<p>9、文档验证</p>
+<blockquote>
+<p>required、default、min、max、match、enum（枚举）、validate（自定义匹配）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> userSchema = <span class="keyword">new</span> mongoose.<span class="title class_">Schema</span>(&#123;</span><br><span class="line">	<span class="attr">name</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">		<span class="attr">required</span>:<span class="literal">true</span>,</span><br><span class="line">         <span class="attr">match</span>:<span class="regexp">/-/</span>,<span class="comment">//必须存在&#x27;-&#x27;字符</span></span><br><span class="line">         <span class="attr">validate</span>:nameLength</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">age</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">		<span class="attr">min</span>:<span class="number">16</span>,</span><br><span class="line">		<span class="attr">max</span>:<span class="number">30</span></span><br><span class="line">	&#125;,</span><br><span class="line">   	<span class="attr">sex</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">         <span class="attr">enum</span>:[<span class="string">&#x27;female&#x27;</span>,<span class="string">&#x27;male&#x27;</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">nameLength</span>(<span class="params">arg</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(arg.<span class="property">length</span>&gt;<span class="number">1</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line"> 	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/22/nginx%20And%20mongoose/" data-id="clll33t9w0002ycvd0d40979e" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  
+  <a href="/2023/08/22/7.24/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title"></div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>
+          
+            <a href="https://beian.miit.gov.cn/" target="_blank"></a>
+            
+        </li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+    <p><ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt tooltip" data-tooltip="UV"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark tooltip" data-tooltip="PV"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul></p>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>

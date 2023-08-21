@@ -64,6 +64,269 @@
     <h1 class="page-type-title"></h1>
     
     
+    <article id="post-nginx And mongoose" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+
+    
+    <div class="article-meta">
+      <a href="/2023/08/22/nginx%20And%20mongoose/" class="article-date">
+  <time datetime="2023-08-21T16:19:17.107Z" itemprop="datePublished">2023-08-22</time>
+</a>
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+        
+      
+      
+        <h1 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h1><blockquote>
+<p>出现是为了解决服务器支持成千上万个并发客户端的问题。</p>
+</blockquote>
+<p>nginx的进程模型：</p>
+<p><img src="C:\Users\93554\AppData\Roaming\Typora\typora-user-images\image-20230721160712712.png" alt="image-20230721160712712"></p>
+<blockquote>
+<p><strong>master进程：</strong>nginx的主进程，负责读取和验证配置文件，并管理worker进程。只有一个</p>
+<p><strong>worker进程：</strong>nginx的工作进程，负责处理实际的请求，可以有多个。</p>
+</blockquote>
+<p>worker进程的数量可以通过配置文件来修改，<code>worker_processes 1;</code></p>
+<p>使用nginx -t 检查配置文件的错误。</p>
+<h2 id="nginx-conf文件的结构："><a href="#nginx-conf文件的结构：" class="headerlink" title="nginx.conf文件的结构："></a>nginx.conf文件的结构：</h2><p>​	全局块</p>
+<p>​		ｅｖｅｎｔｓ：服务器与客户端的网络配置，如指定每个ｗｏｒｋｅｒ								可以同时接收多少个网络连接，网络IO模型</p>
+<p>​		ｈｔｔｐ：修改最频繁，反向代理、负载均衡，里面包括多个ｓｅｒｖｅｒ块，也叫虚拟主机</p>
+<h3 id="正向代理："><a href="#正向代理：" class="headerlink" title="正向代理："></a>正向代理：</h3><p>​	访问国外网站，可以使用VPN代理服务器，让代理服务器作为客户端，代理我们去访问这些网站，然后把访问结果返回给我们，对于服务器是透明的。</p>
+<h3 id="反向代理："><a href="#反向代理：" class="headerlink" title="反向代理："></a>反向代理：</h3><p>​	代理客户端的，如google网站后面又很多服务器，但只对外暴露一个域名，我们只能通过这个域名访问，我们的请求会被转发到后面的服务器上，隐藏了服务器的IP地址、端口等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">upstream name&#123;</span><br><span class="line">	ip_hash; //同一个客户端的请求分配到同一服务器上，解决了session等问题</span><br><span class="line">	</span><br><span class="line">	server ip:端口 weight=3;</span><br><span class="line">	server ip:端口;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">所有以/app开头的请求都被代理到刚刚配置的upstream</span><br><span class="line">location /app&#123;</span><br><span class="line">	proxy_pass http://name;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="虚拟主机："><a href="#虚拟主机：" class="headerlink" title="虚拟主机："></a>虚拟主机：</h3><blockquote>
+<p>一台服务器部署多个站点。每个server块就是一个虚拟主机</p>
+</blockquote>
+<h2 id="mongoose"><a href="#mongoose" class="headerlink" title="mongoose"></a>mongoose</h2><ul>
+<li>Mongoose是一个让我们可以通过Node来操作MongoDB数据库的一个模块</li>
+<li>Mongoose是一个对象文档模型（ODM）库，是对Node原生的MongoDB模块进行了进一步的优化和封装</li>
+<li>基于MongDB驱动，通过关系型数据库的思想来实现非关系型数据库</li>
+</ul>
+<h4 id="new-Object"><a href="#new-Object" class="headerlink" title="new  Object"></a>new  Object</h4><ul>
+<li><p>Schema（模式对象）</p>
+<blockquote>
+<p>Schema对象定义约束了数据库中的文档结构</p>
+</blockquote>
+</li>
+<li><p>Model</p>
+<blockquote>
+<p>Model对象作为集合中的所有文档（document）的表示，相当于MongDB中的collection，它的每一个实例就是一个document文档</p>
+</blockquote>
+</li>
+<li><p>Document</p>
+<blockquote>
+<p>Document表示集合中的具体文档，相当于collection中的一个具体文档</p>
+</blockquote>
+</li>
+<li><p>关系：Schema 生成Model，Model创造Document（Schema是约束了Model的key？model就类似关系数据库中的一张表，document就相当于一段具体数据）</p>
+</li>
+</ul>
+<h4 id="基本使用："><a href="#基本使用：" class="headerlink" title="基本使用："></a>基本使用：</h4><p>1、安装Mongoose</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i mongoose --save</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>2、引入</p>
+<blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">const mongoose = require(&#x27;mongoose&#x27;)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>3、连接本地MongoDB数据库</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mongoose.<span class="title function_">connect</span>(<span class="string">&#x27;mongodb://127.0.0.1:27017/数据库名&#x27;</span>);</span><br><span class="line"><span class="comment">//MongoDB默认端口号是27017</span></span><br><span class="line"></span><br><span class="line">mongoose.<span class="property">connection</span>.<span class="title function_">once</span>(<span class="string">&#x27;open&#x27;</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">	<span class="comment">//数据库连接成功事件</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">mongoose.<span class="property">connection</span>.<span class="title function_">on</span>(<span class="string">&#x27;error&#x27;</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">	<span class="comment">//连接错误事件</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">mongoose.<span class="property">connection</span>.<span class="title function_">on</span>(<span class="string">&#x27;close&#x27;</span>,<span class="function">()=&gt;</span>&#123;</span><br><span class="line">	<span class="comment">//连接关闭事件</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>4、Schema、model的基本使用(操作数据库)</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建schema对象，约束model</span></span><br><span class="line"><span class="keyword">const</span> userSchema = <span class="keyword">new</span> mongoose.<span class="title class_">Schema</span>(&#123;</span><br><span class="line">	<span class="attr">username</span>:<span class="title class_">String</span>,</span><br><span class="line">	<span class="attr">password</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">         <span class="attr">required</span>:<span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">	<span class="attr">gender</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">		<span class="attr">default</span>:<span class="string">&#x27;male&#x27;</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;,</span><br><span class="line">&#123;<span class="attr">timeStamps</span>:<span class="literal">true</span>&#125; <span class="comment">//可选参数，为true时会自动添加createdAt(创建时间)和updatedAt(更新时间)两个字段                                      </span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//创建文档模型对象，将userSchema映射到一个MongDB Collection</span></span><br><span class="line"><span class="keyword">const</span> userModel = mongoose.<span class="title function_">model</span>(<span class="string">&#x27;users&#x27;</span>,userSchema)</span><br><span class="line"></span><br><span class="line"><span class="comment">//在Schema里添加字段要使用add()</span></span><br><span class="line">userSchema.<span class="title function_">add</span>(&#123;<span class="attr">userId</span>:<span class="title class_">Number</span>&#125;,)</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>5、文档插入</p>
+<blockquote>
+<p>insert()、save()、insertMany()、create()</p>
+</blockquote>
+<p>6、文档删除</p>
+<blockquote>
+<p>remove()、findOneAndRemove()、findByIdAndRemove()</p>
+</blockquote>
+<p>7、文档更新</p>
+<blockquote>
+<p>update()、updateOne()、updateMany()、find()+save()、findOne()+save()、findOneAndUpdate()、findByIdAndUpdate()</p>
+</blockquote>
+<p>8、文档查询</p>
+<blockquote>
+<p>find()、findById()、findOne()</p>
+<p>复杂查询</p>
+</blockquote>
+<p>9、文档验证</p>
+<blockquote>
+<p>required、default、min、max、match、enum（枚举）、validate（自定义匹配）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> userSchema = <span class="keyword">new</span> mongoose.<span class="title class_">Schema</span>(&#123;</span><br><span class="line">	<span class="attr">name</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">		<span class="attr">required</span>:<span class="literal">true</span>,</span><br><span class="line">         <span class="attr">match</span>:<span class="regexp">/-/</span>,<span class="comment">//必须存在&#x27;-&#x27;字符</span></span><br><span class="line">         <span class="attr">validate</span>:nameLength</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">age</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">		<span class="attr">min</span>:<span class="number">16</span>,</span><br><span class="line">		<span class="attr">max</span>:<span class="number">30</span></span><br><span class="line">	&#125;,</span><br><span class="line">   	<span class="attr">sex</span>:&#123;</span><br><span class="line">		<span class="attr">type</span>:<span class="title class_">String</span>,</span><br><span class="line">         <span class="attr">enum</span>:[<span class="string">&#x27;female&#x27;</span>,<span class="string">&#x27;male&#x27;</span>]</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">nameLength</span>(<span class="params">arg</span>)&#123;</span><br><span class="line">    <span class="keyword">if</span>(arg.<span class="property">length</span>&gt;<span class="number">1</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line"> 	<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/22/nginx%20And%20mongoose/" data-id="clll33t9w0002ycvd0d40979e" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+    
+    <article id="post-7.24" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+
+    
+    <div class="article-meta">
+      <a href="/2023/08/22/7.24/" class="article-date">
+  <time datetime="2023-08-21T16:18:59.310Z" itemprop="datePublished">2023-08-22</time>
+</a>
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+        
+      
+      
+        <h2 id="7-24"><a href="#7-24" class="headerlink" title="7.24"></a>7.24</h2><h3 id="1、leetcode剑指offer"><a href="#1、leetcode剑指offer" class="headerlink" title="1、leetcode剑指offer"></a>1、leetcode剑指offer</h3><h4 id="1、替换空格"><a href="#1、替换空格" class="headerlink" title="1、替换空格"></a>1、替换空格</h4><p>C:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">char</span> * <span class="title function_">replaceSpace</span><span class="params">(<span class="type">char</span>* s)</span>&#123;</span><br><span class="line">	<span class="type">char</span> *res = (<span class="type">char</span>*)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(<span class="type">char</span>)*(<span class="built_in">strlen</span>(s)*<span class="number">3</span>+<span class="number">1</span>));</span><br><span class="line">	<span class="type">int</span> n =<span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="built_in">strlen</span>(s);i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(s[i]!=<span class="string">&#x27; &#x27;</span>)&#123;</span><br><span class="line">			res[n++] = s[i];</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			res[n++] = <span class="string">&#x27;%&#x27;</span>;</span><br><span class="line">			res[n++] = <span class="string">&#x27;2&#x27;</span>;</span><br><span class="line">			res[n++] = <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	res[n] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、左旋转字符串"><a href="#2、左旋转字符串" class="headerlink" title="2、左旋转字符串"></a>2、左旋转字符串</h4><p>暴力：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">char* reverseLeftWords(char* s, int n)&#123;</span><br><span class="line">    int len = strlen(s);</span><br><span class="line">    char* res =(char*)malloc(sizeof(char)*len+1);</span><br><span class="line">    int count=0;</span><br><span class="line">    for(int i=n;i&lt;len;i++)&#123;</span><br><span class="line">        res[count++] = s[i];</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i=0;i&lt;n;i++)&#123;</span><br><span class="line">        res[count++] = s[i];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    res[count]=&#x27;\0&#x27;;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/22/7.24/" data-id="clll33t9v0001ycvdgbv8gdvx" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+    
+    <article id="post-7.21" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+
+    
+    <div class="article-meta">
+      <a href="/2023/08/22/7.21/" class="article-date">
+  <time datetime="2023-08-21T16:18:59.307Z" itemprop="datePublished">2023-08-22</time>
+</a>
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+        
+      
+      
+        <h2 id="找不到实习找不到工作的第N天"><a href="#找不到实习找不到工作的第N天" class="headerlink" title="找不到实习找不到工作的第N天"></a>找不到实习找不到工作的第N天</h2><blockquote>
+<p>今天是7.20，百库的一面没过，打击很大。</p>
+</blockquote>
+<p>​	</p>
+<p>在牛客上看了大家的面试题，每天都看一些</p>
+<h3 id="1、写一个函数以字符串形式返回当前传入参数的数据类型"><a href="#1、写一个函数以字符串形式返回当前传入参数的数据类型" class="headerlink" title="1、写一个函数以字符串形式返回当前传入参数的数据类型"></a>1、写一个函数以字符串形式返回当前传入参数的数据类型</h3><p>思路：</p>
+<blockquote>
+<p>1、看到这道题，第一想的是先<strong>判断传入参数的数据类型</strong>，再去<strong>转换成字符串</strong>。</p>
+<p>2、判断传入参数的数据类型，根据我们背的八股文，可以知道，一般有三种方法：<code>typeof</code>、<code>instanceof</code>、<code>Object.prototype.toString.call</code></p>
+<p>3、鉴于<code>typeof</code>和<code>instanceof</code>的一些缺点（扩展：typeof和instanceof的区别）选择用<code>Object.prototype.toString.call</code></p>
+<p>4、完成了判断数据类型，接下来是转换成字符串。</p>
+<p>5、Object…..call()返回的是一个字符串，表现为<code>[object xxxxxx]</code></p>
+<p>6、对获得的字符串进行处理，这里选择String对象的两个方法：<code>slice</code>和<code>substr</code></p>
+</blockquote>
+<p>代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">typeToString</span>(<span class="params">param</span>)&#123;</span><br><span class="line">	<span class="keyword">let</span> type = <span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">toString</span>.<span class="title function_">call</span>(param);<span class="comment">//[object xxxxx]</span></span><br><span class="line">	<span class="comment">//获取长度</span></span><br><span class="line">    <span class="keyword">let</span> len = type.<span class="property">length</span>;</span><br><span class="line">    <span class="comment">//得到类型的字符串，切掉[object 和 ]</span></span><br><span class="line">    <span class="keyword">let</span> result = type.<span class="title function_">slice</span>(<span class="number">8</span>,len-<span class="number">1</span>);</span><br><span class="line">    <span class="comment">//用substr</span></span><br><span class="line">    <span class="comment">//let result = type.substr(8,len-1);</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2、把一个对象数组根据对象某个属性值排序"><a href="#2、把一个对象数组根据对象某个属性值排序" class="headerlink" title="2、把一个对象数组根据对象某个属性值排序"></a>2、把一个对象数组根据对象某个属性值排序</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arrObj = [</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="attr">age</span>: <span class="number">11</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;小红&#x27;</span></span><br><span class="line">   &#125;,</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="attr">age</span>: <span class="number">10</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;小绿&#x27;</span></span><br><span class="line">   &#125;,</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="attr">age</span>: <span class="number">20</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;小紫&#x27;</span></span><br><span class="line">   &#125;,</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="attr">age</span>: <span class="number">8</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;小粉&#x27;</span></span><br><span class="line">   &#125;,</span><br><span class="line">] </span><br></pre></td></tr></table></figure>
+
+<p>思路：</p>
+<blockquote>
+<p>参考数组的sort()方法，数组对象也可以用这个方法实现</p>
+</blockquote>
+<p>代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arrObj.<span class="title function_">sort</span>(a,b)=&gt;&#123;</span><br><span class="line">	<span class="keyword">return</span> a.<span class="property">age</span> - b.<span class="property">age</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>扩展：对象里还包括对象呢</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arrObj = [</span><br><span class="line">    <span class="attr">obj2</span>:&#123;</span><br><span class="line">    	<span class="attr">name</span>:<span class="string">&#x27;b&#x27;</span>,</span><br><span class="line">    	<span class="attr">money</span>:<span class="number">10000</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">obj1</span>:&#123;</span><br><span class="line">    	<span class="attr">name</span>:<span class="string">&#x27;a&#x27;</span>,</span><br><span class="line">    	<span class="attr">money</span>:<span class="number">10000</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">obj4</span>:&#123;</span><br><span class="line">    	<span class="attr">name</span>:<span class="string">&#x27;d&#x27;</span>,</span><br><span class="line">    	<span class="attr">money</span>:<span class="number">10000</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">obj3</span>:&#123;</span><br><span class="line">    	<span class="attr">name</span>:<span class="string">&#x27;c&#x27;</span>,</span><br><span class="line">    	<span class="attr">money</span>:<span class="number">10000</span></span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> handler = <span class="title class_">Object</span>.<span class="title function_">keys</span>(arrObj).<span class="title function_">sort</span>(<span class="function">(<span class="params">a,b</span>)=&gt;</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> arrObj[a].<span class="property">money</span> - arrObj[b].<span class="property">money</span></span><br><span class="line">&#125;).<span class="title function_">map</span>(<span class="function"><span class="params">k</span> =&gt;</span> [k,arrObj[k]])</span><br><span class="line"></span><br><span class="line"><span class="comment">//console.log(handler)</span></span><br><span class="line"><span class="comment">/*handler:	</span></span><br><span class="line"><span class="comment">	[</span></span><br><span class="line"><span class="comment">      [ &#x27;obj3&#x27;, &#123; name: &#x27;c&#x27;, money: 10 &#125; ],</span></span><br><span class="line"><span class="comment">      [ &#x27;obj4&#x27;, &#123; name: &#x27;d&#x27;, money: 100 &#125; ],</span></span><br><span class="line"><span class="comment">      [ &#x27;obj1&#x27;, &#123; name: &#x27;a&#x27;, money: 1000 &#125; ],</span></span><br><span class="line"><span class="comment">      [ &#x27;obj2&#x27;, &#123; name: &#x27;b&#x27;, money: 10000 &#125; ]</span></span><br><span class="line"><span class="comment">    ]</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1、签名防篡改"><a href="#1、签名防篡改" class="headerlink" title="1、签名防篡改"></a>1、签名防篡改</h4><p>最直接保存用户登录状态的方法有是把用户名与密码都保持到Cookie中，下次访问时检查Cookie中的用户名与密码，与数据库比较。这是一种比较危险的选择，一般不把密码等重要信息保存到Cookie中。那么怎么事项签名防篡改呢？可通过对cookie的参数进行组合加密生成特定的密钥，在接收cookie时进行验证，防止cookie被人修改，具体方案如下：</p>
+<p><strong>方案一</strong>：是把密码加密后保存到Cookie中，下次访问时解密并与数据库比较。这种方案略微安全一些。如果不希望保存密码，还可以把登录的时间戳保存到Cookie与数据库中，到时只验证用户名与登录时间戳就可以了。</p>
+<p><strong>方案二</strong>：<strong>只在登录时查询一次数据库，以后访问验证登录信息时不再查询数据库。实现方式是把账号按照一定的规则加密后，连同账号一块保存到Cookie中。下次访问时只需要判断账号的加密规则是否正确即可。</strong></p>
+<h4 id="2、http-only-防止XSS"><a href="#2、http-only-防止XSS" class="headerlink" title="2、http-only(防止XSS)"></a>2、http-only(防止XSS)</h4><p>如果在Cookie中设置了”HttpOnly”属性，那么通过程序(JS脚本、Applet等)将无法读取到Cookie信息，这样能有效的防止XSS攻击。</p>
+<h3 id="3、secure"><a href="#3、secure" class="headerlink" title="3、secure"></a>3、secure</h3><p>当设置为true时，表示创建的 Cookie 会被以安全的形式向服务器传输，也就是只能在 HTTPS 连接中被浏览器传递到服务器端进行会话验证，如果是 HTTP 连接则不会传递该信息，所以不会被窃取到Cookie 的具体内容。</p>
+<p>7.22</p>
+<p>手写一个深拷贝</p>
+<p>数组上的forEach、Map、filter、reduce的区别</p>
+<p>1、相同点：</p>
+<p>都会遍历数组上的每一项，map、forEach、reduce回调函数接收的参数是一样的，分别是当前元素、当前元素索引和当前数组</p>
+<p>匿名函数this都指向window</p>
+<p>2、不同点：</p>
+<p>forEach、map是对原数组的项进行处理，map会返回一个新数组，forEach可能会修改原数组；filter是用于过滤数组，返回一个新数组。</p>
+<p>reduce把数组缩减为一个值，比如求和、求积。</p>
+<h2 id="数组扁平化："><a href="#数组扁平化：" class="headerlink" title="数组扁平化："></a>数组扁平化：</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/22/7.21/" data-id="clll33t9n0000ycvdees97zlj" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+
+  
+
+</article>
+    
     <article id="post-newpaper" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  
+  
+  <title>
+    
+    Hexo
+  </title>
+  <!-- Icon -->
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+    
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-7.21" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+
+    
+    <div class="article-meta">
+      <a href="/2023/08/22/7.21/" class="article-date">
+  <time datetime="2023-08-21T16:18:59.307Z" itemprop="datePublished">2023-08-22</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+<div class="tocbot"></div>
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+        <h2 id="找不到实习找不到工作的第N天"><a href="#找不到实习找不到工作的第N天" class="headerlink" title="找不到实习找不到工作的第N天"></a>找不到实习找不到工作的第N天</h2><blockquote>
+<p>今天是7.20，百库的一面没过，打击很大。</p>
+</blockquote>
+<p>​	</p>
+<p>在牛客上看了大家的面试题，每天都看一些</p>
+<h3 id="1、写一个函数以字符串形式返回当前传入参数的数据类型"><a href="#1、写一个函数以字符串形式返回当前传入参数的数据类型" class="headerlink" title="1、写一个函数以字符串形式返回当前传入参数的数据类型"></a>1、写一个函数以字符串形式返回当前传入参数的数据类型</h3><p>思路：</p>
+<blockquote>
+<p>1、看到这道题，第一想的是先<strong>判断传入参数的数据类型</strong>，再去<strong>转换成字符串</strong>。</p>
+<p>2、判断传入参数的数据类型，根据我们背的八股文，可以知道，一般有三种方法：<code>typeof</code>、<code>instanceof</code>、<code>Object.prototype.toString.call</code></p>
+<p>3、鉴于<code>typeof</code>和<code>instanceof</code>的一些缺点（扩展：typeof和instanceof的区别）选择用<code>Object.prototype.toString.call</code></p>
+<p>4、完成了判断数据类型，接下来是转换成字符串。</p>
+<p>5、Object…..call()返回的是一个字符串，表现为<code>[object xxxxxx]</code></p>
+<p>6、对获得的字符串进行处理，这里选择String对象的两个方法：<code>slice</code>和<code>substr</code></p>
+</blockquote>
+<p>代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">typeToString</span>(<span class="params">param</span>)&#123;</span><br><span class="line">	<span class="keyword">let</span> type = <span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">toString</span>.<span class="title function_">call</span>(param);<span class="comment">//[object xxxxx]</span></span><br><span class="line">	<span class="comment">//获取长度</span></span><br><span class="line">    <span class="keyword">let</span> len = type.<span class="property">length</span>;</span><br><span class="line">    <span class="comment">//得到类型的字符串，切掉[object 和 ]</span></span><br><span class="line">    <span class="keyword">let</span> result = type.<span class="title function_">slice</span>(<span class="number">8</span>,len-<span class="number">1</span>);</span><br><span class="line">    <span class="comment">//用substr</span></span><br><span class="line">    <span class="comment">//let result = type.substr(8,len-1);</span></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="2、把一个对象数组根据对象某个属性值排序"><a href="#2、把一个对象数组根据对象某个属性值排序" class="headerlink" title="2、把一个对象数组根据对象某个属性值排序"></a>2、把一个对象数组根据对象某个属性值排序</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arrObj = [</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="attr">age</span>: <span class="number">11</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;小红&#x27;</span></span><br><span class="line">   &#125;,</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="attr">age</span>: <span class="number">10</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;小绿&#x27;</span></span><br><span class="line">   &#125;,</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="attr">age</span>: <span class="number">20</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;小紫&#x27;</span></span><br><span class="line">   &#125;,</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="attr">age</span>: <span class="number">8</span>,</span><br><span class="line">      <span class="attr">name</span>: <span class="string">&#x27;小粉&#x27;</span></span><br><span class="line">   &#125;,</span><br><span class="line">] </span><br></pre></td></tr></table></figure>
+
+<p>思路：</p>
+<blockquote>
+<p>参考数组的sort()方法，数组对象也可以用这个方法实现</p>
+</blockquote>
+<p>代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arrObj.<span class="title function_">sort</span>(a,b)=&gt;&#123;</span><br><span class="line">	<span class="keyword">return</span> a.<span class="property">age</span> - b.<span class="property">age</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>扩展：对象里还包括对象呢</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> arrObj = [</span><br><span class="line">    <span class="attr">obj2</span>:&#123;</span><br><span class="line">    	<span class="attr">name</span>:<span class="string">&#x27;b&#x27;</span>,</span><br><span class="line">    	<span class="attr">money</span>:<span class="number">10000</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">obj1</span>:&#123;</span><br><span class="line">    	<span class="attr">name</span>:<span class="string">&#x27;a&#x27;</span>,</span><br><span class="line">    	<span class="attr">money</span>:<span class="number">10000</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">obj4</span>:&#123;</span><br><span class="line">    	<span class="attr">name</span>:<span class="string">&#x27;d&#x27;</span>,</span><br><span class="line">    	<span class="attr">money</span>:<span class="number">10000</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">obj3</span>:&#123;</span><br><span class="line">    	<span class="attr">name</span>:<span class="string">&#x27;c&#x27;</span>,</span><br><span class="line">    	<span class="attr">money</span>:<span class="number">10000</span></span><br><span class="line">    &#125;,</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> handler = <span class="title class_">Object</span>.<span class="title function_">keys</span>(arrObj).<span class="title function_">sort</span>(<span class="function">(<span class="params">a,b</span>)=&gt;</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> arrObj[a].<span class="property">money</span> - arrObj[b].<span class="property">money</span></span><br><span class="line">&#125;).<span class="title function_">map</span>(<span class="function"><span class="params">k</span> =&gt;</span> [k,arrObj[k]])</span><br><span class="line"></span><br><span class="line"><span class="comment">//console.log(handler)</span></span><br><span class="line"><span class="comment">/*handler:	</span></span><br><span class="line"><span class="comment">	[</span></span><br><span class="line"><span class="comment">      [ &#x27;obj3&#x27;, &#123; name: &#x27;c&#x27;, money: 10 &#125; ],</span></span><br><span class="line"><span class="comment">      [ &#x27;obj4&#x27;, &#123; name: &#x27;d&#x27;, money: 100 &#125; ],</span></span><br><span class="line"><span class="comment">      [ &#x27;obj1&#x27;, &#123; name: &#x27;a&#x27;, money: 1000 &#125; ],</span></span><br><span class="line"><span class="comment">      [ &#x27;obj2&#x27;, &#123; name: &#x27;b&#x27;, money: 10000 &#125; ]</span></span><br><span class="line"><span class="comment">    ]</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="1、签名防篡改"><a href="#1、签名防篡改" class="headerlink" title="1、签名防篡改"></a>1、签名防篡改</h4><p>最直接保存用户登录状态的方法有是把用户名与密码都保持到Cookie中，下次访问时检查Cookie中的用户名与密码，与数据库比较。这是一种比较危险的选择，一般不把密码等重要信息保存到Cookie中。那么怎么事项签名防篡改呢？可通过对cookie的参数进行组合加密生成特定的密钥，在接收cookie时进行验证，防止cookie被人修改，具体方案如下：</p>
+<p><strong>方案一</strong>：是把密码加密后保存到Cookie中，下次访问时解密并与数据库比较。这种方案略微安全一些。如果不希望保存密码，还可以把登录的时间戳保存到Cookie与数据库中，到时只验证用户名与登录时间戳就可以了。</p>
+<p><strong>方案二</strong>：<strong>只在登录时查询一次数据库，以后访问验证登录信息时不再查询数据库。实现方式是把账号按照一定的规则加密后，连同账号一块保存到Cookie中。下次访问时只需要判断账号的加密规则是否正确即可。</strong></p>
+<h4 id="2、http-only-防止XSS"><a href="#2、http-only-防止XSS" class="headerlink" title="2、http-only(防止XSS)"></a>2、http-only(防止XSS)</h4><p>如果在Cookie中设置了”HttpOnly”属性，那么通过程序(JS脚本、Applet等)将无法读取到Cookie信息，这样能有效的防止XSS攻击。</p>
+<h3 id="3、secure"><a href="#3、secure" class="headerlink" title="3、secure"></a>3、secure</h3><p>当设置为true时，表示创建的 Cookie 会被以安全的形式向服务器传输，也就是只能在 HTTPS 连接中被浏览器传递到服务器端进行会话验证，如果是 HTTP 连接则不会传递该信息，所以不会被窃取到Cookie 的具体内容。</p>
+<p>7.22</p>
+<p>手写一个深拷贝</p>
+<p>数组上的forEach、Map、filter、reduce的区别</p>
+<p>1、相同点：</p>
+<p>都会遍历数组上的每一项，map、forEach、reduce回调函数接收的参数是一样的，分别是当前元素、当前元素索引和当前数组</p>
+<p>匿名函数this都指向window</p>
+<p>2、不同点：</p>
+<p>forEach、map是对原数组的项进行处理，map会返回一个新数组，forEach可能会修改原数组；filter是用于过滤数组，返回一个新数组。</p>
+<p>reduce把数组缩减为一个值，比如求和、求积。</p>
+<h2 id="数组扁平化："><a href="#数组扁平化：" class="headerlink" title="数组扁平化："></a>数组扁平化：</h2>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/08/22/7.21/" data-id="clll33t9n0000ycvdees97zlj" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2023/08/22/7.24/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      (no title)
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2023/07/19/newpaper/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">前端实习面试-百库</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>Hexo &copy; 2023</li>
+      
+        <li>
+          
+            <a href="https://beian.miit.gov.cn/" target="_blank"></a>
+            
+        </li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+    <p><ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt tooltip" data-tooltip="UV"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark tooltip" data-tooltip="PV"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul></p>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="Hexo"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">Home</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">Archives</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/gallery">Gallery</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">About</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="fe fe-feed"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>
